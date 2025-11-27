@@ -24,7 +24,7 @@ addRoute("POST",'/api/users',async(req,res)=>{
     const body=await parseBody(req)
    const users=readUser()
     const data={
-        id:new Date(),
+       
         ...body
     }
 
@@ -32,4 +32,27 @@ addRoute("POST",'/api/users',async(req,res)=>{
     rightUser(users)
 
     sendJson(res,201,{sucess:true,data:body})
+})
+
+addRoute("PUT","/api/users/:id",async(req,res)=>{
+    const {id}=(req as any).params;
+    const body =await parseBody(req)
+    const users=readUser()
+    const index=users.findIndex((user: any)=>user.id==id)
+    if(index==-1){
+      return  sendJson(res,404,{
+            sucess:false,
+            message:"user no fond"
+        })
+    }
+    users[index]={
+        ...users[index],
+        ...body
+    }
+    rightUser(users)
+    sendJson(res,202,{
+        sucess:true,
+        message:`id ${id} user updated`,
+        data:users[index]
+    })
 })
